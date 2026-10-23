@@ -72,4 +72,4 @@ Intel macOS 首次实测暴露了宿主与 Go 动态库的 TLS/回调栈冲突�
 
 这些自动测试没有调用真实模型，受保护的生产配置及登录文件校验值未变，隔离进程已停止。本机生产环境仍保留开发版 `0.1.0-dev.3`；正式版没有另做人工 Codex 客户端验收。
 
-商店收录申请：[PR #284](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/284)，当前待审核。上述安装器验证不等于官方商店已经收录；合并后还需确认官方目录可检索并完成安装。
+商店收录申请：[PR #284](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/284)。该 PR 曾于 2026-10-24（Asia/Shanghai）按用户要求临时关闭，以调整 README、配图和双语简介；后续收录继续使用同一个 PR。最新审核状态请查看 PR。上述安装器验证不等于官方商店已经收录；合并后仍需确认官方目录可检索并完成安装。

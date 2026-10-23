@@ -1,7 +1,7 @@
 {
   "id": "codexgate",
   "name": "CodexGate",
-  "description": "Accepts the current local Codex file-login credential alongside existing CPA API keys, allowing the native openai provider identity to use a local CPA endpoint without a separate proxy process.",
+  "description": "解决接入 CPA 后，dot 入口消失的问题。配合 ECPA 的“使用 openai 提供商标识”功能，自动读取本机有效的 Codex 登录文件，恢复因切换提供商标识而缺失的 dot 入口。模型请求依然走 CPA，原有 API Key 保持可用，无需额外运行后台进程。 / Fixes the missing dot entry in Codex after connecting to CPA. Works with ECPA’s “Use openai provider identifier” feature by automatically reading your valid local Codex login file to restore the missing dot entry. Model requests continue to route through CPA, existing API keys remain active, and no extra background process is required.",
   "author": "chatwithgod",
   "repository": "https://github.com/chatwithgod/cpa-plugin-codexgate",
   "homepage": "https://github.com/chatwithgod/cpa-plugin-codexgate",
