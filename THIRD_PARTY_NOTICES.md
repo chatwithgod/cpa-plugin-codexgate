@@ -5,7 +5,7 @@ CodexGate uses the MIT-licensed CLIProxyAPI plugin SDK, pinned to v8.0.38:
 - https://github.com/router-for-me/CLIProxyAPI/tree/v8.0.38/sdk/pluginapi
 - https://github.com/router-for-me/CLIProxyAPI/tree/v8.0.38/sdk/pluginabi
 
-The native C ABI shell in `cmd/codexgate/main.go` is adapted from its Go native plugin example:
+The native C ABI types and original shell in `cmd/codexgate/` are adapted from its Go native plugin example:
 
 - https://github.com/router-for-me/CLIProxyAPI/blob/v8.0.38/examples/plugin/frontend-auth-exclusive/go/main.go
 

@@ -1,6 +1,6 @@
 # 验证记录
 
-日期：2026-10-23（Asia/Shanghai）。
+首次 Windows 开发版验证：2026-10-23（Asia/Shanghai）。后续平台验证见下方 CI 记录。
 
 ## 已通过
 
@@ -46,11 +46,15 @@ SHA-256：`29f756e03f2f41cdd3bc5c2de723962047f684713e6cc011918a39ab2f506df3`。
 
 | 平台 | 构建/单元/vet/race | CPA 商店安装器 | 官方 CPA 8.0.38 宿主鉴权与 WS 握手 | 人工 Codex 客户端 |
 | --- | --- | --- | --- | --- |
-| Windows amd64 | 待 CI | 待 CI | 待 CI | 开发版通过；正式版未另测 |
-| Linux amd64 | 待 CI | 待 CI | 待 CI | 未测 |
-| Linux arm64 | 待 CI | 待 CI | 待 CI | 未测 |
-| macOS amd64 | 待 CI | 待 CI | 待 CI | 未测 |
-| macOS arm64 | 待 CI | 待 CI | 待 CI | 未测 |
+| Windows amd64 | 通过 | 通过 | 通过 | 开发版通过；正式版未另测 |
+| Linux amd64 | 通过 | 通过 | 通过 | 未测 |
+| Linux arm64 | 通过 | 通过 | 通过 | 未测 |
+| macOS amd64 | 通过 | 通过 | 通过 | 未测 |
+| macOS arm64 | 通过 | 通过 | 通过 | 未测 |
+
+首次五端通过的代码提交：`77df3aa37415ef5b2bacd8579e1d6a2ae509fabc`；[完整 CI 运行及平台报告](https://github.com/chatwithgod/cpa-plugin-codexgate/actions/runs/39999645261)。五端均通过并发原生回调、原 API Key、当前登录、过期/轮换/退出、启停、管理接口保护和 WebSocket 握手检查。两种 Linux 架构均检查了 GLIBC 2.17 基线。
+
+Intel macOS 首次实测暴露了宿主与 Go 动态库的 TLS/回调栈冲突，表现为 `runtime.cgocallback` / `unknown caller pc`。已增加仅用于该平台的 C 线程回调边界，保留相同鉴权逻辑；修复后官方 CPA 宿主和并发回调通过。细节见 [DEVELOPMENT.md](DEVELOPMENT.md)。
 
 正式发布工作流要求五个平台的自动验证全部通过。正式 Release 的 `verification.json` 记录具体提交、工具链、动态库校验值、安装器与宿主检查结果。系统凭据库不在支持范围内，其他 CPA 版本未据此自动视为兼容。
 

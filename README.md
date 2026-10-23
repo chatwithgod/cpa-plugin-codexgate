@@ -22,7 +22,7 @@ Only file-based `auth_mode=chatgpt` logins are supported; system keychains/keyri
 
 ## Install and enable
 
-Store submission is being prepared. Until listed, use the matching platform ZIP from [Releases](https://github.com/chatwithgod/cpa-plugin-codexgate/releases).
+Install from the CPA plugin store once listed; before then, use the matching platform ZIP from [Releases](https://github.com/chatwithgod/cpa-plugin-codexgate/releases).
 
 1. Keep at least one existing CPA API key and bind CPA to `127.0.0.1`. Confirm that Codex already has a file-based ChatGPT login.
 2. Put the ZIP's library in CPA's plugin directory under `<goos>/<goarch>`: `codexgate.dll`, `codexgate.so`, or `codexgate.dylib`. macOS uses `darwin`; Apple Silicon uses `arm64`. Do not overwrite a loaded library. For manual replacement, stop CPA during a maintenance window first.
@@ -58,7 +58,7 @@ To roll back, **first** disable ECPA's provider-identity option or restore your 
 
 ## Compatibility
 
-Target platforms: Windows amd64; Linux amd64/arm64 with GLIBC 2.17+; macOS amd64/arm64. The baseline is CPA **8.0.38**, ABI 1/schema 6, built with Go **1.26.8**. Linux CPA `no-plugin` builds and musl-only environments are not supported.
+Verified native targets: Windows amd64; Linux amd64/arm64 with GLIBC 2.17+; macOS amd64/arm64. The baseline is CPA **8.0.38**, ABI 1/schema 6, built with Go **1.26.8**. Linux CPA `no-plugin` builds and musl-only environments are not supported.
 
 Windows development version `0.1.0-dev.3` passed isolated authentication tests and user-confirmed dot/new-chat use after restart on 2026-10-23. Formal multi-platform verification is tracked separately in [VERIFICATION.md](docs/VERIFICATION.md), Actions, and the release's `verification.json`.
 

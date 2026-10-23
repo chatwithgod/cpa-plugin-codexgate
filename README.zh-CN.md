@@ -22,7 +22,7 @@ CPA 和 Codex 同机、同用户运行，且使用文件式 ChatGPT 登录时，
 
 ## 安装与使用顺序
 
-商店收录正在准备中，收录前可从 [Releases](https://github.com/chatwithgod/cpa-plugin-codexgate/releases) 下载对应平台的 ZIP。
+商店收录后可以直接安装；收录前可从 [Releases](https://github.com/chatwithgod/cpa-plugin-codexgate/releases) 下载对应平台的 ZIP。
 
 1. 确认 Codex 已通过 ChatGPT 登录并有本地登录文件；CPA 监听 `127.0.0.1`，保留至少一个原 API Key。
 2. 把包内的 `codexgate.dll`、`codexgate.so` 或 `codexgate.dylib` 放到 CPA 插件目录的 `<goos>/<goarch>` 下。macOS 对应 `darwin`，Apple Silicon 对应 `arm64`。不要覆盖正在加载的库；手动替换时，先在空闲时间停止 CPA。
@@ -58,7 +58,7 @@ CPA 和 Codex 同机、同用户运行，且使用文件式 ChatGPT 登录时，
 
 ## 平台与验证
 
-目标平台为 Windows amd64、Linux amd64/arm64（GLIBC 2.17+）、macOS amd64/arm64。兼容基线为 CPA **8.0.38**、ABI 1/schema 6，Go **1.26.8**。Linux 的 `no-plugin` 版 CPA 和纯 musl 环境不适用。
+已通过原生宿主验证的平台为 Windows amd64、Linux amd64/arm64（GLIBC 2.17+）、macOS amd64/arm64。兼容基线为 CPA **8.0.38**、ABI 1/schema 6，Go **1.26.8**。Linux 的 `no-plugin` 版 CPA 和纯 musl 环境不适用。
 
 2026-10-23，Windows 开发版 `0.1.0-dev.3` 已通过隔离鉴权测试，用户也确认重启后 dot、新聊天正常。正式版的多平台自动验证另见[验证记录](docs/VERIFICATION.md)、Actions 和 Release 中的 `verification.json`。
 
