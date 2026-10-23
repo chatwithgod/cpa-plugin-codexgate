@@ -36,6 +36,12 @@ python scripts/smoke_cpa.py --core /path/to/cli-proxy-api --library /path/to/cod
 
 This proves loading and authentication, not a full Codex UI or upstream-model session on every OS. Manual acceptance is recorded separately.
 
+## Intel macOS callback boundary
+
+The original direct Go exports reproduced `runtime.cgocallback` / `unknown caller pc` on the official Darwin amd64 CPA binary. The host and c-shared Go runtime were sharing a thread-local `g` slot. `cmd/codexgate/bridge.c` keeps the ABI entry/free operations in C and dispatches Intel macOS Go callbacks onto fresh C-owned threads, joined before returning. No host Go callback or Go-managed pointer is passed between runtimes, and no persistent worker/process is introduced. Other architectures keep direct calls.
+
+This is a platform-specific boundary tested against the pinned host, not a general claim that arbitrary Go c-shared libraries can safely interact. Background: https://github.com/golang/go/issues/65050 . The real-host smoke includes concurrent authenticated requests as well as lifecycle calls.
+
 ## Publish
 
 1. Update `VERSION`, changelog, README status, and the verification record.

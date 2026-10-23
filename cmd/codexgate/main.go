@@ -3,25 +3,7 @@
 package main
 
 /*
-#include <stdint.h>
-#include <stdlib.h>
-typedef struct { void* ptr; size_t len; } cliproxy_buffer;
-typedef int (*cliproxy_host_call_fn)(void*, const char*, const uint8_t*, size_t, cliproxy_buffer*);
-typedef void (*cliproxy_host_free_fn)(void*, size_t);
-typedef struct {
-    uint32_t abi_version; void* host_ctx;
-    cliproxy_host_call_fn call; cliproxy_host_free_fn free_buffer;
-} cliproxy_host_api;
-typedef int (*cliproxy_plugin_call_fn)(char*, uint8_t*, size_t, cliproxy_buffer*);
-typedef void (*cliproxy_plugin_free_fn)(void*, size_t);
-typedef void (*cliproxy_plugin_shutdown_fn)(void);
-typedef struct {
-    uint32_t abi_version; cliproxy_plugin_call_fn call;
-    cliproxy_plugin_free_fn free_buffer; cliproxy_plugin_shutdown_fn shutdown;
-} cliproxy_plugin_api;
-extern int cliproxyPluginCall(char*, uint8_t*, size_t, cliproxy_buffer*);
-extern void cliproxyPluginFree(void*, size_t);
-extern void cliproxyPluginShutdown(void);
+#include "bridge.h"
 */
 import "C"
 
@@ -30,24 +12,13 @@ import (
 	"unsafe"
 
 	"codexgate/internal/plugin"
-	"github.com/router-for-me/CLIProxyAPI/v8/sdk/pluginabi"
 )
 
 var manager plugin.Manager
 
-func main() {}
+const nativeABIVersion = uint32(C.CODEXGATE_ABI_VERSION)
 
-//export cliproxy_plugin_init
-func cliproxy_plugin_init(host *C.cliproxy_host_api, api *C.cliproxy_plugin_api) C.int {
-	if host == nil || api == nil || uint32(host.abi_version) != pluginabi.ABIVersion {
-		return 1
-	}
-	api.abi_version = C.uint32_t(pluginabi.ABIVersion)
-	api.call = C.cliproxy_plugin_call_fn(C.cliproxyPluginCall)
-	api.free_buffer = C.cliproxy_plugin_free_fn(C.cliproxyPluginFree)
-	api.shutdown = C.cliproxy_plugin_shutdown_fn(C.cliproxyPluginShutdown)
-	return 0
-}
+func main() {}
 
 func respond(out *C.cliproxy_buffer, value any) {
 	raw, err := json.Marshal(value)
@@ -89,13 +60,6 @@ func cliproxyPluginCall(method *C.char, request *C.uint8_t, length C.size_t, out
 	}
 	respond(out, map[string]any{"ok": true, "result": result})
 	return 0
-}
-
-//export cliproxyPluginFree
-func cliproxyPluginFree(ptr unsafe.Pointer, length C.size_t) {
-	if ptr != nil {
-		C.free(ptr)
-	}
 }
 
 //export cliproxyPluginShutdown

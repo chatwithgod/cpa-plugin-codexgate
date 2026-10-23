@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import base64
+from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import json
 import os
@@ -152,6 +153,10 @@ def main():
             expect("unrelated_JWT_rejected", 401, bearer=token(int(time.time()) + 3600, "unrelated"))
             expect("original_api_key_kept", 200, bearer=api_key)
             expect("native_codex_credential_accepted", 200, bearer=initial)
+            with ThreadPoolExecutor(max_workers=4) as pool:
+                codes = list(pool.map(lambda _: request(bearer=initial)[0], range(12)))
+            assert codes == [200] * 12, "concurrent native ABI authentication"
+            summary["checks"]["concurrent_native_callbacks"] = True
             expect("management_stays_protected", 401, path="/v0/management/codexgate/status", bearer=initial)
             assert websocket_status() == 401
             assert websocket_status(initial) == 101
