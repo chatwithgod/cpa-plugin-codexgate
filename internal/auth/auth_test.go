@@ -139,3 +139,23 @@ func TestDefaultPathAndDiagnostics(t *testing.T) {
 		t.Fatal("diagnostics leaked identity or were not ready")
 	}
 }
+
+func TestPortableHomeAndExplicitPath(t *testing.T) {
+	home := filepath.Join(t.TempDir(), "home with spaces", "中文")
+	t.Setenv("CODEX_HOME", "")
+	t.Setenv("HOME", home)
+	t.Setenv("USERPROFILE", home)
+	got, err := ResolveFile("")
+	if err != nil || got != filepath.Join(home, ".codex", "auth.json") {
+		t.Fatalf("user-home fallback: %q, %v", got, err)
+	}
+	t.Setenv("CODEX_HOME", "relative-home")
+	if _, err := ResolveFile(""); err == nil {
+		t.Fatal("relative CODEX_HOME accepted")
+	}
+	explicit := filepath.Join(t.TempDir(), "custom login", "auth.json")
+	got, err = ResolveFile(explicit)
+	if err != nil || got != explicit {
+		t.Fatalf("explicit path must override CODEX_HOME: %q, %v", got, err)
+	}
+}

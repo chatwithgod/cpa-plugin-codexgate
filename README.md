@@ -1,53 +1,65 @@
 # CodexGate
 
-让 Codex 保留原生 `openai` 接入，同时继续通过 CPA 使用模型和现有插件。
+[简体中文](README.zh-CN.md) · [Releases](https://github.com/chatwithgod/cpa-plugin-codexgate/releases) · [Verification](docs/VERIFICATION.md)
 
-CodexGate 只补入口鉴权：CPA 原有 API Key 继续有效，Codex 发来的凭证只有与本机当前登录文件匹配、且未过期时才被接受。它不改模型请求，不处理回复，不接管 Reflow，也不启动独立服务。
+CodexGate is an inbound authentication compatibility plugin for CLIProxyAPI (CPA). It lets Codex keep `model_provider="openai"` while model requests still go through your local CPA instance. This addresses the provider-identity restriction that hid the **dot** entry in our tested desktop setup; it does not grant account features that are otherwise unavailable.
 
-## 当前状态
+Existing CPA API keys keep working. No extra daemon, model routing, request rewriting, reasoning continuation, or upstream account management is added. This is an independent MIT-licensed project, not an official OpenAI or CPA plugin.
 
-- 当前开发版：`0.1.0-dev.3`，Windows x64、CPA 8.0.38。
-- 已通过单元测试、并发检查、`go vet` 和独立 CPA 的入口鉴权 / WebSocket 握手测试，详见 `docs/VERIFICATION.md`。
-- CPA SDK 固定为 v8.0.38，原生 ABI 1 / JSON schema 6。
-- 尚未安装到生产环境，也尚未完成安装插件后的真实 Codex / dot 验收。
-- 本项目不自动修改 Codex 配置；正式安装与切换接入是单独一步。
-- CPA 要求注册信息填写源码地址，开发版暂填拟建地址 `https://github.com/chatwithgod/cpa-plugin-codexgate`；仓库尚未创建或发布。
+## How it works
 
-## 默认怎么工作
+For each supported request, CodexGate reads the current login file and accepts only a Bearer token that **exactly matches** its `access_token` and has valid time claims. A supplied `ChatGPT-Account-ID` must also match. It does not verify JWT cryptographic signatures or contact an external service: the trusted local file is the source of identity.
 
-启用插件后，无须填写 token。它只读当前用户的登录文件：
+The lookup order is:
 
-1. 设置了 `CODEX_HOME`：读取其下的 `auth.json`。
-2. 否则读取用户目录下的 `.codex/auth.json`。
-3. 非默认位置可在插件设置的 `auth-file` 中填写绝对路径。
+1. An explicit absolute `auth-file` path in the plugin settings.
+2. The CPA process's `CODEX_HOME/auth.json`.
+3. The CPA process user's `~/.codex/auth.json`.
 
-每次鉴权重新读取文件，不复制或持久化 token。刷新登录后，新 token 直接生效；旧 token 不再接受。退出登录、文件不可读、文件损坏或 token 到期时拒绝放行，原有 API Key 不受影响。
+Same-user local installations with a file-based ChatGPT login normally need no extra plugin configuration. Refreshing the login takes effect on the next request. Old, expired, missing, or malformed credentials are rejected; CPA's original API-key path remains available.
 
-默认支持模型列表、Responses HTTP/SSE、Responses WebSocket 握手、压缩和 Alpha Search 入口。不会用 Codex 凭证放行 CPA 管理接口。
+Only file-based `auth_mode=chatgpt` logins are supported; system keychains/keyrings are not read. A service account or container needs access to the correct user's file. For containers, read-only-mount the directory containing `auth.json`, not just the single file, so atomic replacement remains visible; set `auth-file` to its absolute path inside the container. Keep CPA local and the login directory private.
 
-上述鉴权作用于新的 HTTP 请求和 WebSocket 握手，不会主动踢掉已建立的 WebSocket 连接。禁用插件也不会替你改回 Codex 配置；回退时需要同时恢复原来的 CPA 接入方式。
+## Install and enable
 
-## 使用边界
+Store submission is being prepared. Until listed, use the matching platform ZIP from [Releases](https://github.com/chatwithgod/cpa-plugin-codexgate/releases).
 
-- CPA 应继续只监听 `127.0.0.1`，保留至少一个原有 API Key。不要为了本插件清空密钥列表。
-- 第一版支持文件形式的 Codex 登录，不读取系统凭据库。
-- 可信来源是本机登录文件，不是“长得像 JWT”的请求。插件不进行云端撤销查询；它检查精确匹配和 token 时间字段。
-- CPA 的插件鉴权接口不提供请求方 IP；本机监听限制由 CPA 本身执行，不靠客户端可伪造的转发头判断。
-- 插件既不修复也不绕过账号自身的 dot 开通条件。
-- 状态接口受 CPA 管理鉴权保护：`GET /v0/management/codexgate/status`，不返回 token 或账号信息。
+1. Keep at least one existing CPA API key and bind CPA to `127.0.0.1`. Confirm that Codex already has a file-based ChatGPT login.
+2. Put the ZIP's library in CPA's plugin directory under `<goos>/<goarch>`: `codexgate.dll`, `codexgate.so`, or `codexgate.dylib`. macOS uses `darwin`; Apple Silicon uses `arm64`. Do not overwrite a loaded library. For manual replacement, stop CPA during a maintenance window first.
+3. Enable the plugin in the management UI. If editing YAML, **merge** this into the existing settings rather than replacing other plugins:
 
-## 构建与隔离测试
+   ```yaml
+   plugins:
+     enabled: true
+     configs:
+       codexgate:
+         enabled: true
+         # auth-file: /absolute/path/to/auth.json
+   ```
 
-需要 Go 1.26 和支持 cgo 的 Windows x64 C 编译器。
+4. Check `GET /v0/management/codexgate/status` with the CPA management key. It should report `enabled: true` and `login.ready: true`. This protected endpoint reports no token or account ID.
+5. **ECPA users:** enable “使用 openai 提供商标识” (“Use openai provider identity”). **Plain CPA users:** back up Codex's configuration and set its top-level fields:
 
-```powershell
-go mod download
-pwsh -File ./scripts/build.ps1 -Go '你的 go.exe 路径' -CC '你的 gcc.exe 路径' -Version '0.1.0-dev.3'
-python ./scripts/smoke_cpa.py --core '你的 cli-proxy-api.exe 路径' --dll './build/0.1.0-dev.3/codexgate-v0.1.0-dev.3.dll'
-```
+   ```toml
+   model_provider = "openai"
+   openai_base_url = "http://127.0.0.1:8317/v1"
+   ```
 
-构建脚本拒绝覆盖已有 DLL。隔离测试使用随机本机端口、合成登录文件和空的上游账号目录，不调用真实模型，不加载生产插件，不修改生产配置。测试完自动停止隔离进程，报告保存在 `.runs`。
+   Use your actual CPA address. Do not place these fields in `[model_providers.openai]`, and do not change `auth.json`.
+6. Wait for active Codex work to finish, restart Codex, and check dot plus a new chat. Confirm requests appear in CPA usage records.
 
-## 来源
+## Scope and rollback
 
-原生插件 ABI 入口参考 CLIProxyAPI 的 MIT 许可示例；具体来源见 `THIRD_PARTY_NOTICES.md`。这不是 OpenAI 或 CPA 官方插件。
+Supported routes are model listings, Responses HTTP/SSE and WebSocket handshakes, compact, alpha/search, and the corresponding `/backend-api/codex` aliases. Unrelated routes such as Chat Completions still require CPA's normal authentication. Management authentication is not replaced.
+
+There is no remote token refresh or revocation lookup. Authentication applies to new HTTP requests and WebSocket handshakes; already-open WebSockets are not forcibly disconnected or authenticated again on each message.
+
+To roll back, **first** disable ECPA's provider-identity option or restore your previous CPA provider settings, then restart Codex when idle. **Afterward**, disable or uninstall CodexGate. Keep the original API keys. Do not copy login tokens into CPA's static key list.
+
+## Compatibility
+
+Target platforms: Windows amd64; Linux amd64/arm64 with GLIBC 2.17+; macOS amd64/arm64. The baseline is CPA **8.0.38**, ABI 1/schema 6, built with Go **1.26.8**. Linux CPA `no-plugin` builds and musl-only environments are not supported.
+
+Windows development version `0.1.0-dev.3` passed isolated authentication tests and user-confirmed dot/new-chat use after restart on 2026-10-23. Formal multi-platform verification is tracked separately in [VERIFICATION.md](docs/VERIFICATION.md), Actions, and the release's `verification.json`.
+
+See [development and release instructions](docs/DEVELOPMENT.md) and [third-party notices](THIRD_PARTY_NOTICES.md).

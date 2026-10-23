@@ -1,0 +1,10 @@
+{
+  "id": "codexgate",
+  "name": "CodexGate",
+  "description": "Accepts the current local Codex file-login credential alongside existing CPA API keys, allowing the native openai provider identity to use a local CPA endpoint without a separate proxy process.",
+  "author": "chatwithgod",
+  "repository": "https://github.com/chatwithgod/cpa-plugin-codexgate",
+  "homepage": "https://github.com/chatwithgod/cpa-plugin-codexgate",
+  "license": "MIT",
+  "tags": ["Auth", "Codex", "Compatibility"]
+}

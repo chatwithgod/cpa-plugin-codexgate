@@ -8,6 +8,7 @@ import json
 import os
 from pathlib import Path
 import secrets
+import shutil
 import socket
 import subprocess
 import time
@@ -24,12 +25,17 @@ def token(expires: int, nonce: str) -> str:
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--core", required=True)
-    parser.add_argument("--dll", required=True)
+    parser.add_argument("--library", "--dll", dest="library", required=True)
+    parser.add_argument("--expected-version")
+    parser.add_argument("--report")
     args = parser.parse_args()
     root = Path(__file__).resolve().parent.parent
-    core, dll = Path(args.core).resolve(strict=True), Path(args.dll).resolve(strict=True)
+    core, dll = Path(args.core).resolve(strict=True), Path(args.library).resolve(strict=True)
     run = root / ".runs" / (time.strftime("%Y%m%d-%H%M%S") + "-" + secrets.token_hex(3))
     run.mkdir(parents=True)
+    isolated_plugins = run / "plugins"
+    isolated_plugins.mkdir()
+    shutil.copy2(dll, isolated_plugins / dll.name)
     home = run / "codex-home"
     home.mkdir()
     login = home / "auth.json"
@@ -43,7 +49,7 @@ def main():
         "access": {"api-keys": [api_key]},
         "oauth": {"auth-dir": str(run / "empty-upstream-accounts")},
         "observability": {"logs": {"debug": False, "logging-to-file": False, "request-log": False}, "usage": {"usage-statistics-enabled": False}},
-        "plugins": {"enabled": True, "dir": str(dll.parent), "configs": {"codexgate": {"enabled": True}}},
+        "plugins": {"enabled": True, "dir": str(isolated_plugins), "configs": {"codexgate": {"enabled": True}}},
     }
     config_path = run / "config.yaml"
 
@@ -62,7 +68,7 @@ def main():
     save_login(initial)
     protected = [Path.home() / ".codex" / "config.toml", Path.home() / ".codex" / "auth.json", core.parent / "config.yaml", core.parent.parent / "config.toml"]
     baseline = {p: hashlib.sha256(p.read_bytes()).hexdigest() for p in protected if p.is_file()}
-    summary = {"kind": "isolated CPA auth, HTTP and WebSocket handshake; no model inference", "dll_sha256": hashlib.sha256(dll.read_bytes()).hexdigest(), "checks": {}}
+    summary = {"kind": "isolated CPA auth, HTTP and WebSocket handshake; no model inference", "library_sha256": hashlib.sha256(dll.read_bytes()).hexdigest(), "core_sha256": hashlib.sha256(core.read_bytes()).hexdigest(), "protected_file_count": len(baseline), "checks": {}}
     base = f"http://127.0.0.1:{port}"
 
     class NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -132,10 +138,13 @@ def main():
             registration = json.loads(request("/v0/management/plugins", management_key)[1])
             (run / "plugin-registration.json").write_text(json.dumps(registration, indent=2), encoding="utf-8")
             loaded = [p for p in registration["plugins"] if p["id"] == "codexgate"]
-            assert len(loaded) == 1 and loaded[0]["registered"] and loaded[0]["effective_enabled"], "native DLL registration"
-            summary["checks"]["native_dll_registered"] = True
+            assert len(loaded) == 1 and loaded[0]["registered"] and loaded[0]["effective_enabled"], "native library registration"
+            summary["checks"]["native_library_registered"] = True
             status = json.loads(expect("status", 200, path="/v0/management/codexgate/status", bearer=management_key))
             assert status["enabled"] and status["login"]["ready"] and not status["exclusive"]
+            if args.expected_version:
+                assert status["version"] == args.expected_version, "loaded plugin version"
+            summary["plugin_version"] = status["version"]
             assert Path(status["auth_file"]) == login
             summary["checks"]["default_codex_home_detected"] = True
             expect("missing_credentials_rejected", 401)
@@ -183,6 +192,11 @@ def main():
     summary["checks"]["isolated_process_stopped"] = proc is None or proc.poll() is not None
     summary["success"] = failure is None and all(summary["checks"].values())
     (run / "summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
+    if args.report:
+        report = Path(args.report)
+        report.parent.mkdir(parents=True, exist_ok=True)
+        with report.open("x", encoding="utf-8") as f:
+            json.dump(summary, f, ensure_ascii=False, indent=2)
     print(json.dumps(summary, ensure_ascii=False), flush=True)
     if not summary["success"]:
         raise SystemExit(1)

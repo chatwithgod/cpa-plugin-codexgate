@@ -15,7 +15,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-var Version = "0.1.0-dev.3"
+var Version = "0.1.0"
 
 type Manager struct {
 	mu             sync.RWMutex
@@ -46,8 +46,6 @@ func registration() any {
 		"schema_version": pluginabi.SchemaVersion,
 		"metadata": pluginapi.Metadata{
 			Name: "codexgate", Version: Version, Author: "CodexGate contributors",
-			// CPA requires this field even for unpublished local development builds.
-			// This is the planned address; creating/publishing the repository is separate.
 			GitHubRepository: "https://github.com/chatwithgod/cpa-plugin-codexgate",
 			ConfigFields: []pluginapi.ConfigField{{
 				Name: "auth-file", Type: pluginapi.ConfigFieldTypeString, Default: "",

@@ -1,0 +1,22 @@
+{
+  "go": "1.26.8",
+  "cpa": "8.0.38",
+  "cpa_assets": {
+    "windows-amd64": {"file": "CLIProxyAPI_8.0.38_windows_amd64.zip", "sha256": "4b54808ee28174dca5ac10f711d33958043609ed3dc0c92bbcef63329f3a59f3"},
+    "linux-amd64": {"file": "CLIProxyAPI_8.0.38_linux_amd64.tar.gz", "sha256": "05690c53245a149230a8b7d64085ed96036275a72414d0097f88bb6314acb39b"},
+    "linux-arm64": {"file": "CLIProxyAPI_8.0.38_linux_aarch64.tar.gz", "sha256": "a1282bbbaa3a9ca9e5c36865d1a840e2902b783bbda4894935c04befdb623c29"},
+    "darwin-amd64": {"file": "CLIProxyAPI_8.0.38_darwin_amd64.tar.gz", "sha256": "e7e36545d5badc8d16cccc2e27d776cfe10ae5c2d220274fce22681ec9770ff3"},
+    "darwin-arm64": {"file": "CLIProxyAPI_8.0.38_darwin_aarch64.tar.gz", "sha256": "58899af288fc25bf5b9c8a59dc936ca375c331addfa7b4e4ecc1f13fba00d5d3"}
+  },
+  "llvm_mingw": {
+    "version": "20260922",
+    "file": "llvm-mingw-20260922-ucrt-x86_64.zip",
+    "sha256": "e3ad77d117a4bea19a7a3b333341824d79a5a371004a10e25b8504e7b3047666"
+  },
+  "manylinux": {
+    "amd64": "quay.io/pypa/manylinux2014_x86_64@sha256:3a591c1109773dbd79f16c038588fd1867d9f2f708b360dab5715852c7f96ef0",
+    "arm64": "quay.io/pypa/manylinux2014_aarch64@sha256:00260f8334f8358554592c35d33f1b6daa064a3c95725328624b4823dc07bf81"
+  },
+  "xcode": "16.4",
+  "macos_deployment_target": "12.0"
+}

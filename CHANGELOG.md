@@ -1,0 +1,17 @@
+# Changelog
+
+## 0.1.0
+
+- First store-format release candidate of CodexGate.
+- Keep CPA API-key authentication and accept the current local Codex file-login token through a non-exclusive frontend provider.
+- Cover Codex model listings, Responses HTTP/SSE and WebSocket handshakes, compact and alpha/search.
+- Add five native build targets, pinned toolchains, Linux GLIBC 2.17 builds, CPA release-installer checks, and isolated official-host tests.
+- Add English/Chinese setup and rollback instructions. Record the user-confirmed Windows `0.1.0-dev.3` dot/new-chat acceptance separately from release CI.
+
+## 0.1.0-dev.3 — 2026-10-23
+
+- Correct CPA metadata and management-route registration.
+- Pass Windows unit, race, isolated host lifecycle and WebSocket handshake tests.
+- Install locally; user confirms dot and new chats work after enabling ECPA's openai provider identity and restarting Codex.
+
+Earlier development artifacts are preserved; the development source baseline is tagged `v0.1.0-dev.3`.
