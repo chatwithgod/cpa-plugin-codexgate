@@ -2,6 +2,8 @@
 
 [简体中文](README.zh-CN.md) · [Releases](https://github.com/chatwithgod/cpa-plugin-codexgate/releases) · [Verification](docs/VERIFICATION.md)
 
+> **Release status:** v0.1.0 is available on [GitHub Releases](https://github.com/chatwithgod/cpa-plugin-codexgate/releases/tag/v0.1.0). CPA Plugin Store [PR #284](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/284) is awaiting review, so use the manual installation instructions below until it is listed. All five target platforms passed native CI and post-release package verification.
+
 CodexGate is an inbound authentication compatibility plugin for CLIProxyAPI (CPA). It lets Codex keep `model_provider="openai"` while model requests still go through your local CPA instance. This addresses the provider-identity restriction that hid the **dot** entry in our tested desktop setup; it does not grant account features that are otherwise unavailable.
 
 Existing CPA API keys keep working. No extra daemon, model routing, request rewriting, reasoning continuation, or upstream account management is added. This is an independent MIT-licensed project, not an official OpenAI or CPA plugin.

@@ -59,3 +59,17 @@ Intel macOS 首次实测暴露了宿主与 Go 动态库的 TLS/回调栈冲突�
 正式发布工作流要求五个平台的自动验证全部通过。正式 Release 的 `verification.json` 记录具体提交、工具链、动态库校验值、安装器与宿主检查结果。系统凭据库不在支持范围内，其他 CPA 版本未据此自动视为兼容。
 
 鉴权发生在新的 HTTP 请求和 WebSocket 握手。已经建立的 WebSocket 连接不会由本插件主动断开；不能把握手测试理解成消息逐条重新鉴权。
+
+## 正式发布后的下载与安装核对
+
+[v0.1.0](https://github.com/chatwithgod/cpa-plugin-codexgate/releases/tag/v0.1.0) 已公开发布。发布提交为 `4c7a4e3ebf04cd876eed1ade22ee98c11ff423fa`；[正式发布 CI](https://github.com/chatwithgod/cpa-plugin-codexgate/actions/runs/40000618432) 再次通过上述五个平台的构建、单测、vet、race、商店 SDK 安装器及官方 CPA 宿主测试。
+
+发布后另做了以下核对：
+
+1. 下载全部 5 个公开 ZIP，核对 `checksums.txt`、ZIP 结构和动态库校验值，确认它们与 [verification.json](https://github.com/chatwithgod/cpa-plugin-codexgate/releases/download/v0.1.0/verification.json) 记录的受测产物一致。
+2. 使用 CPA SDK 安装器从真实 GitHub Release 下载并安装 Windows 动态库，安装到全新的隔离目录，没有覆盖现有库。
+3. 用这份安装后的动态库启动隔离 CPA 8.0.38，重新通过加载、并发回调、鉴权、WebSocket 握手、凭证轮换/退出、启停和管理接口保护检查。
+
+这些自动测试没有调用真实模型，受保护的生产配置及登录文件校验值未变，隔离进程已停止。本机生产环境仍保留开发版 `0.1.0-dev.3`；正式版没有另做人工 Codex 客户端验收。
+
+商店收录申请：[PR #284](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/284)，当前待审核。上述安装器验证不等于官方商店已经收录；合并后还需确认官方目录可检索并完成安装。

@@ -2,6 +2,8 @@
 
 [English](README.md) · [下载版本](https://github.com/chatwithgod/cpa-plugin-codexgate/releases) · [验证记录](docs/VERIFICATION.md)
 
+> **发布状态**：v0.1.0 已在 [GitHub Releases](https://github.com/chatwithgod/cpa-plugin-codexgate/releases/tag/v0.1.0) 正式发布。官方商店收录申请 [PR #284](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/284) 待审核，尚未上架，目前可按下方说明手动安装。五个平台均已通过原生 CI 和发布包核对。
+
 CodexGate 是 CPA 的入口鉴权兼容插件。它让 Codex 保留原生 `openai` 提供商标识，同时模型请求继续走本地 CPA。在我们验证过的桌面环境中，这样能解决自定义提供商导致 **dot 入口不显示**的问题，但不会给账号开通原本没有的功能权限。
 
 原有 CPA API Key 继续有效。插件不改请求和回复，不接管路由、Reflow 或上游账号，也不增加独立后台进程。这是独立的 MIT 开源项目，不是 OpenAI 或 CPA 官方插件。
