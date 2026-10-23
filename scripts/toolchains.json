@@ -1,5 +1,6 @@
 {
   "go": "1.26.8",
+  "python_native_ci": "3.14.9",
   "cpa": "8.0.38",
   "cpa_assets": {
     "windows-amd64": {"file": "CLIProxyAPI_8.0.38_windows_amd64.zip", "sha256": "4b54808ee28174dca5ac10f711d33958043609ed3dc0c92bbcef63329f3a59f3"},
