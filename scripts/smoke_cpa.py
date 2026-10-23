@@ -6,6 +6,7 @@ import base64
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 import secrets
 import shutil
@@ -188,6 +189,14 @@ def main():
                     proc.wait(timeout=5)
     log_text = (run / "core.log").read_text(encoding="utf-8", errors="replace")
     summary["checks"]["credentials_absent_from_logs"] = all(value not in log_text for value in [initial, rotated, expired, api_key, management_key])
+    if failure is not None:
+        safe_log = log_text
+        for secret in [initial, rotated, expired, api_key, management_key, "synthetic-account"]:
+            safe_log = safe_log.replace(secret, "<redacted>")
+        safe_log = re.sub(r"\x1b\[[0-?]*[ -/]*[@-~]", "", safe_log)
+        safe_log = "".join(c for c in safe_log if c in "\n\r\t" or ord(c) >= 32)
+        summary["host_exit_code"] = None if proc is None else proc.returncode
+        summary["host_failure_excerpt"] = safe_log[:5000] + ("\n...\n" + safe_log[-3000:] if len(safe_log) > 5000 else "")
     summary["checks"]["production_files_unchanged"] = all(p.is_file() and hashlib.sha256(p.read_bytes()).hexdigest() == value for p, value in baseline.items())
     summary["checks"]["isolated_process_stopped"] = proc is None or proc.poll() is not None
     summary["success"] = failure is None and all(summary["checks"].values())

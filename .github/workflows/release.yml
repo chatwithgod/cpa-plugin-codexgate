@@ -57,6 +57,7 @@ jobs:
       - name: Build, package, install and run isolated CPA
         run: python scripts/ci.py
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
         with:
           name: ${{ matrix.target }}
           path: dist/*/${{ matrix.target }}/
@@ -99,6 +100,7 @@ jobs:
               python scripts/ci.py
             '
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
         with:
           name: linux-${{ matrix.arch }}
           path: dist/*/linux-${{ matrix.arch }}/
