@@ -19,17 +19,17 @@ The plugin automatically detects the login file, so manual configuration is usua
 
 ## Download Plugin
 
-CodexGate is not yet listed in the plugin store. Please download the stable release from [Releases (v0.1.0)](https://github.com/chatwithgod/cpa-plugin-codexgate/releases/tag/v0.1.0).
+CodexGate is not yet listed in the plugin store. Please download the stable release from [Releases (v0.1.1)](https://github.com/chatwithgod/cpa-plugin-codexgate/releases/tag/v0.1.1).
 
 Select the package matching your operating system:
 
 | OS / Architecture | Package |
 |---|---|
-| Windows 64-bit | `codexgate_0.1.0_windows_amd64.zip` |
-| Linux x86_64 | `codexgate_0.1.0_linux_amd64.zip` |
-| Linux ARM64 | `codexgate_0.1.0_linux_arm64.zip` |
-| macOS Intel | `codexgate_0.1.0_darwin_amd64.zip` |
-| macOS Apple Silicon | `codexgate_0.1.0_darwin_arm64.zip` |
+| Windows 64-bit | `codexgate_0.1.1_windows_amd64.zip` |
+| Linux x86_64 | `codexgate_0.1.1_linux_amd64.zip` |
+| Linux ARM64 | `codexgate_0.1.1_linux_arm64.zip` |
+| macOS Intel | `codexgate_0.1.1_darwin_amd64.zip` |
+| macOS Apple Silicon | `codexgate_0.1.1_darwin_arm64.zip` |
 
 ## Installation and Activation
 

@@ -83,7 +83,8 @@ def main():
         headers = {"Authorization": "Bearer " + bearer} if bearer else {}
         if body is not None:
             headers["Content-Type"] = "application/json"
-        req = urllib.request.Request(base + path, headers=headers, method=method, data=None if body is None else json.dumps(body).encode())
+        data = body if isinstance(body, bytes) else None if body is None else json.dumps(body).encode()
+        req = urllib.request.Request(base + path, headers=headers, method=method, data=data)
         try:
             with opener.open(req, timeout=5) as response:
                 return response.status, response.read()
@@ -153,6 +154,13 @@ def main():
             expect("unrelated_JWT_rejected", 401, bearer=token(int(time.time()) + 3600, "unrelated"))
             expect("original_api_key_kept", 200, bearer=api_key)
             expect("native_codex_credential_accepted", 200, bearer=initial)
+            # Malformed JSON stops in the Images handler before any model call.
+            # A 400 here proves authentication passed; missing credentials stay 401.
+            for operation in ("generations", "edits"):
+                image_request = {"path": f"/v1/images/{operation}", "method": "POST", "body": b"{"}
+                expect(f"image_{operation}_missing_credentials", 401, **image_request)
+                expect(f"image_{operation}_native_login_accepted", 400, bearer=initial, **image_request)
+                expect(f"image_{operation}_api_key_kept", 400, bearer=api_key, **image_request)
             with ThreadPoolExecutor(max_workers=4) as pool:
                 codes = list(pool.map(lambda _: request(bearer=initial)[0], range(12)))
             assert codes == [200] * 12, "concurrent native ABI authentication"

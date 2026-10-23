@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.1 — 2026-10-24
+
+- Fix built-in Codex image-tool authentication through CPA by accepting the current local login on `POST /v1/images/generations` and `POST /v1/images/edits`.
+- Keep exact credential matching, expiry/account checks, original CPA API keys, and management protection unchanged. Add route-boundary and isolated Images API authentication checks without model inference.
+
 ## 0.1.0
 
 - First store-format release of CodexGate.

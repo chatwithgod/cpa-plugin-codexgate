@@ -15,7 +15,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-var Version = "0.1.0"
+var Version = "0.1.1"
 
 type Manager struct {
 	mu             sync.RWMutex

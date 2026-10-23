@@ -56,13 +56,16 @@ func ResolveFile(explicit string) (string, error) {
 }
 
 // AllowedRoute intentionally excludes management, resource, and unrelated APIs.
-// Both HTTP/SSE and the Responses WebSocket handshake use these paths.
+// Responses HTTP/SSE, WebSocket handshakes, and the Images API use these paths.
 func AllowedRoute(method, path string) bool {
 	if method == http.MethodGet && path == "/v1/models" {
 		return true
 	}
 	if method == http.MethodGet && strings.HasPrefix(path, "/v1/models/") {
 		return len(strings.TrimPrefix(path, "/v1/models/")) > 0
+	}
+	if path == "/v1/images/generations" || path == "/v1/images/edits" {
+		return method == http.MethodPost
 	}
 	for _, prefix := range []string{"/v1", "/backend-api/codex"} {
 		switch path {

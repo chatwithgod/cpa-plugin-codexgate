@@ -38,6 +38,11 @@ func TestAuthentication(t *testing.T) {
 		{"responses", "chatgpt", valid, valid, "POST", "/v1/responses", "synthetic-account", true},
 		{"websocket", "chatgpt", valid, valid, "GET", "/v1/responses", "", true},
 		{"compact", "chatgpt", valid, valid, "POST", "/backend-api/codex/responses/compact", "", true},
+		{"image generation", "chatgpt", valid, valid, "POST", "/v1/images/generations", "", true},
+		{"image edit", "chatgpt", valid, valid, "POST", "/v1/images/edits", "synthetic-account", true},
+		{"image expired login", "chatgpt", expired, expired, "POST", "/v1/images/generations", "", false},
+		{"image wrong account", "chatgpt", valid, valid, "POST", "/v1/images/edits", "another-account", false},
+		{"image unrelated JWT", "chatgpt", valid, other, "POST", "/v1/images/edits", "", false},
 		{"no credential", "chatgpt", valid, "", "GET", "/v1/models", "", false},
 		{"other valid-looking JWT", "chatgpt", valid, other, "GET", "/v1/models", "", false},
 		{"API key left to host", "chatgpt", valid, "synthetic-cpa-key", "GET", "/v1/models", "", false},
@@ -60,6 +65,28 @@ func TestAuthentication(t *testing.T) {
 				t.Fatalf("authenticated=%v, want %v", got, tc.want)
 			}
 		})
+	}
+}
+
+func TestImageRouteBoundaries(t *testing.T) {
+	for _, path := range []string{"/v1/images/generations", "/v1/images/edits"} {
+		if !AllowedRoute(http.MethodPost, path) {
+			t.Fatalf("image POST rejected: %s", path)
+		}
+		for _, method := range []string{http.MethodGet, http.MethodPut, http.MethodPatch, http.MethodDelete} {
+			if AllowedRoute(method, path) {
+				t.Fatalf("unexpected image method allowed: %s %s", method, path)
+			}
+		}
+	}
+	for _, path := range []string{
+		"/v1/images", "/v1/images/variations", "/v1/images/generations/extra",
+		"/v1/images/edits/extra", "/backend-api/codex/images/generations",
+		"/v0/management/images/generations",
+	} {
+		if AllowedRoute(http.MethodPost, path) {
+			t.Fatalf("unrelated image path allowed: %s", path)
+		}
 	}
 }
 

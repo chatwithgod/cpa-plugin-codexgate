@@ -73,3 +73,17 @@ Intel macOS 首次实测暴露了宿主与 Go 动态库的 TLS/回调栈冲突�
 这些自动测试没有调用真实模型，受保护的生产配置及登录文件校验值未变，隔离进程已停止。本机生产环境仍保留开发版 `0.1.0-dev.3`；正式版没有另做人工 Codex 客户端验收。
 
 商店收录申请：[PR #284](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/284)。该 PR 曾于 2026-10-24（Asia/Shanghai）按用户要求临时关闭，以调整 README、配图和双语简介；后续收录继续使用同一个 PR。最新审核状态请查看 PR。上述安装器验证不等于官方商店已经收录；合并后仍需确认官方目录可检索并完成安装。
+
+## 本机图片工具鉴权热修复：0.1.1-dev.1
+
+2026-10-24（Asia/Shanghai），排查内置生图工具返回的 `401 Invalid API key`：同一份当前 Codex 登录凭证访问 `/v1/models` 返回 200，但访问 `/v1/images/generations` 和 `/v1/images/edits` 返回 401。原有 CPA API Key 能通过图片接口鉴权；故意提交不完整 JSON 时，接口返回本地参数错误 400，没有调用上游模型。
+
+根因是 CodexGate 的路由允许列表遗漏了这两个 Images API 入口。修复仅增加这两个路径的 POST 请求，不开放其他图片路径或方法，不改变凭证、有效期、账号检查和管理接口保护。
+
+- Windows amd64 本地开发包 `0.1.1-dev.1`：单元测试、vet、race 和隔离 CPA 8.0.38 宿主检查通过。
+- 新增隔离检查覆盖两个图片接口：当前本机凭证和原 API Key 均进入参数检查（400），无凭证仍返回 401。原有普通请求、WebSocket 握手、凭证轮换/退出和插件启停检查继续通过。
+- 用户授权后，使用管理 API 热切换本机插件，保留 `0.1.0-dev.3` 原库及回退备份，没有重启 CPA/Codex。其他运行配置及受保护文件保持不变。
+- 按用户授权仅执行 **1 次真实内置生图工具调用**，成功生成“白底蓝色圆形”测试图片。图像编辑接口验证的是鉴权，没有另做真实编辑调用。
+- 新 DLL SHA-256：`a70fd652e6ae5754437bf46e1adc010e6588af5c7c0fc836a2cb76e94e697854`。
+
+本地证据：`.runs/image-auth-0.1.1-dev.1-smoke.json`、`.runs/image-auth-install-report.json`、`.runs/image-auth-real-tool-check.json`。该开发包只做 Windows 本机验证，不单独发布到 GitHub Release 或插件商店；正式版平台验证另记，不改写上面的 v0.1.0 记录。

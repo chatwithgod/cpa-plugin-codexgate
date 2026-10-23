@@ -19,17 +19,17 @@ CodexGate 是一个 CPA（CLIProxyAPI）插件，用来解决因自定义提供�
 
 ## 下载插件
 
-目前尚未上架插件商店，请从 [Releases 下载正式版 v0.1.0](https://github.com/chatwithgod/cpa-plugin-codexgate/releases/tag/v0.1.0)。
+目前尚未上架插件商店，请从 [Releases 下载正式版 v0.1.1](https://github.com/chatwithgod/cpa-plugin-codexgate/releases/tag/v0.1.1)。
 
 按你的电脑选择安装包：
 
 | 系统 | 安装包 |
 |---|---|
-| Windows 64 位 | `codexgate_0.1.0_windows_amd64.zip` |
-| Linux x86_64 | `codexgate_0.1.0_linux_amd64.zip` |
-| Linux ARM64 | `codexgate_0.1.0_linux_arm64.zip` |
-| macOS Intel | `codexgate_0.1.0_darwin_amd64.zip` |
-| macOS Apple Silicon | `codexgate_0.1.0_darwin_arm64.zip` |
+| Windows 64 位 | `codexgate_0.1.1_windows_amd64.zip` |
+| Linux x86_64 | `codexgate_0.1.1_linux_amd64.zip` |
+| Linux ARM64 | `codexgate_0.1.1_linux_arm64.zip` |
+| macOS Intel | `codexgate_0.1.1_darwin_amd64.zip` |
+| macOS Apple Silicon | `codexgate_0.1.1_darwin_arm64.zip` |
 
 ## 安装与启用
 

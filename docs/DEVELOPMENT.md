@@ -64,6 +64,8 @@ Refreshing the file takes effect on the next request. Old, expired, missing, or 
 
 Supported routes include model listings, Responses HTTP/SSE and WebSocket handshakes, compact, alpha/search, and the applicable `/backend-api/codex` aliases. See `internal/auth/auth.go` for the method/path allowlist. Unrelated routes such as Chat Completions still require CPA's normal authentication, and management endpoints still require the management key.
 
+Version `0.1.1` also accepts `POST /v1/images/generations` and `POST /v1/images/edits`. Codex's built-in image tool uses these Images API routes; v0.1.0 and the earlier development build omitted them, so the local login was rejected with HTTP 401 before reaching image processing. The fix adds only these two POST routes and keeps credential, expiry, account, and management checks unchanged. The preceding Windows `0.1.1-dev.1` hotfix and its real image-generation check are recorded separately in [VERIFICATION.md](VERIFICATION.md).
+
 Authentication applies to new HTTP requests and WebSocket handshakes. Already-open WebSockets are not forcibly disconnected on rotation/logout, and messages on an established connection are not re-authenticated individually.
 
 ## Verification and test records
@@ -95,7 +97,7 @@ Individual steps:
 ```sh
 python scripts/build.py
 python scripts/package_release.py
-python scripts/smoke_cpa.py --core /path/to/cli-proxy-api --library /path/to/codexgate.so --expected-version 0.1.0
+python scripts/smoke_cpa.py --core /path/to/cli-proxy-api --library /path/to/codexgate.so --expected-version 0.1.1
 ```
 
 `build.py` checks the Go version and native architecture, runs tests/vet/race, then writes a version/platform-specific library. Existing outputs are never overwritten. `build.ps1` and `package.py` are retained development helpers; store releases use the Python pipeline.
@@ -105,7 +107,7 @@ python scripts/smoke_cpa.py --core /path/to/cli-proxy-api --library /path/to/cod
 1. Native tests, vet and race checks pass.
 2. ZIP layout and checksums follow the store specification.
 3. The pinned CPA SDK's actual release installer downloads local in-memory fixtures, rejects a mismatched checksum, parses the ZIP, and installs the library to a new temporary directory. This check cannot reach external endpoints.
-4. The official CPA 8.0.38 binary loads that installed library and exercises authentication, rotation/logout/expiry, enable/disable and WebSocket handshake with synthetic credentials.
+4. The official CPA 8.0.38 binary loads that installed library and exercises authentication, rotation/logout/expiry, enable/disable and WebSocket handshake with synthetic credentials. Images API checks send malformed JSON to verify authentication without making a model call.
 5. Only redacted summaries and packages are uploaded as artifacts. Raw test configs, login files, and host logs stay out of releases.
 
 This proves loading and authentication, not a full Codex UI or upstream-model session on every OS. Manual acceptance is recorded separately.
@@ -119,10 +121,10 @@ This is a platform-specific boundary tested against the pinned host, not a gener
 ### Publish
 
 1. Update `VERSION`, changelog, README status, and the verification record.
-2. Commit a clean tree; let all five main-branch jobs pass.
-3. Push a matching `v<version>` tag. The tag workflow rebuilds and verifies all targets.
+2. Commit a clean tree. Main-branch CI can verify development changes before release; it is not a substitute for the tag's release checks.
+3. Push a matching `v<version>` tag. The tag workflow builds and verifies all five targets before its publish job can run.
 4. `assemble_release.py` requires matching version/source commit, clean sources, successful host/installer evidence, valid archives/checksums, and both Linux GLIBC reports.
 5. Upload all assets to a draft release before publishing: `codexgate_<version>_<goos>_<goarch>.zip`, `checksums.txt`, and `verification.json`.
-6. Validate published downloads, then submit `store/registry-entry.json` to the official store in a PR changing only `registry.json`. A pending PR is not a listing.
+6. Validate published downloads and push the release commit plus verification records to `main`. Submit `store/registry-entry.json` to the official store in a PR changing only `registry.json`; update the existing submission when one is already open. A pending PR is not a listing.
 
 Never replace a published artifact silently; use a new version. Do not restart or modify a user's running CPA/Codex during CI or publishing.

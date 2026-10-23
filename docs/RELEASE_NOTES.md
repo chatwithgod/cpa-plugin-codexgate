@@ -1,29 +1,29 @@
-# CodexGate v0.1.0
-
-## English
-
-CodexGate adds local Codex file-login authentication to CPA without replacing existing API keys. Keep Codex's `openai` provider identity while sending model requests through CPA; the tested Windows setup retains dot and new-chat communication after restart.
-
-- Exact current-token matching with expiry checks; no extra daemon or upstream account management.
-- Model listings, Responses HTTP/SSE and WebSocket handshakes, compact and alpha/search.
-- Windows amd64, Linux amd64/arm64 (GLIBC 2.17+), macOS amd64/arm64.
-- Pinned CPA 8.0.38 / ABI 1 / schema 6 baseline and Go 1.26.8.
-- Five native build, store-installer and official CPA host-smoke jobs gate publication. See `verification.json` for this release's results.
-
-Real Codex UI acceptance has been confirmed on Windows with development version `0.1.0-dev.3`; automated host checks do not establish full client/model-stream acceptance on every platform. Only file-based ChatGPT login is supported, not system credential vaults.
-
-Install and enable the plugin before enabling ECPA's “使用 openai 提供商标识” option. Keep the original API keys. To roll back, restore the previous provider configuration and restart Codex before disabling the plugin. Store inclusion is tracked separately from this release.
+# CodexGate v0.1.1
 
 ## 中文
 
-CodexGate 让 CPA 接受本机 Codex 的文件登录凭证，同时保留原有 API Key。Codex 可以继续使用 `openai` 提供商标识，模型请求仍走 CPA；已验证的 Windows 环境中，重启后 dot 和新聊天都能正常通信。
+CodexGate 解决接入 CPA 后 dot 入口消失的问题，配合 ECPA 的“使用 openai 提供商标识”功能使用。
 
-- 当前 Token 精确匹配及有效期检查，不增加独立后台服务或账号管理。
-- 支持模型列表、Responses HTTP/SSE、WebSocket 握手、compact 和 alpha/search。
-- 提供 Windows amd64、Linux amd64/arm64（GLIBC 2.17+）、macOS amd64/arm64 的安装包。
-- 基线为 CPA 8.0.38、ABI 1/schema 6、Go 1.26.8。
-- 五个平台的构建、商店安装器及真实 CPA 宿主冒烟全部通过后才发布；结果见 `verification.json`。
+**本次更新：**
+- **修复内置生图 401 问题**：补上 `POST /v1/images/generations` 和 `POST /v1/images/edits` 的本机登录鉴权，解决这两个接口遗漏造成的 HTTP 401。
+- **升级后无需额外配置**：原有 CPA API Key、其他路由及鉴权检查保持不变，安装并启用插件即可。
 
-Windows 开发版 `0.1.0-dev.3` 已有用户确认的客户端验收；自动宿主测试不代表每个平台都完成了真实客户端/模型流测试。目前仅支持文件式 ChatGPT 登录，不读取系统凭据库。
+**平台与验证：**
+- Windows amd64、Linux amd64/arm64、macOS amd64/arm64 五个平台均通过原生 CI 构建、商店安装器及官方 CPA 宿主测试。
+- Windows 开发版已实测一次真实内置生图成功。详细记录见[验证文档](https://github.com/chatwithgod/cpa-plugin-codexgate/blob/main/docs/VERIFICATION.md)。
+- 安装包为 `codexgate_0.1.1_<goos>_<goarch>.zip`，附带 `checksums.txt` 和 `verification.json`。安装步骤见[中文指南](https://github.com/chatwithgod/cpa-plugin-codexgate/blob/v0.1.1/README.zh-CN.md)。
 
-请先安装启用插件，再开启 ECPA“使用 openai 提供商标识”，保留原 API Key。回退时先恢复提供商配置并重启 Codex，再禁用插件。商店收录状态与此 Release 分开跟踪。
+---
+
+## English
+
+CodexGate fixes the missing dot entry in Codex after connecting to CPA, working with ECPA's “Use openai provider identifier” feature.
+
+**What's new:**
+- **Fixed built-in image-tool authentication (HTTP 401):** Added local login support for `POST /v1/images/generations` and `POST /v1/images/edits`, fixing the 401 caused by these missing routes.
+- **No extra setup after upgrading:** Existing CPA API keys, other routes, and authentication checks remain unchanged. Install and enable the plugin as usual.
+
+**Platforms and verification:**
+- Windows amd64, Linux amd64/arm64, and macOS amd64/arm64 passed native CI builds, store-installer checks, and official CPA host tests.
+- One real built-in image-generation call succeeded on the Windows development build. See the [verification record](https://github.com/chatwithgod/cpa-plugin-codexgate/blob/main/docs/VERIFICATION.md) for details.
+- Packages are named `codexgate_0.1.1_<goos>_<goarch>.zip`, accompanied by `checksums.txt` and `verification.json`. Follow the [installation guide](https://github.com/chatwithgod/cpa-plugin-codexgate/blob/v0.1.1/README.md).
