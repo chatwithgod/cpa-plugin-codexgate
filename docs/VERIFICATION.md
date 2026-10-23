@@ -87,3 +87,23 @@ Intel macOS 首次实测暴露了宿主与 Go 动态库的 TLS/回调栈冲突�
 - 新 DLL SHA-256：`a70fd652e6ae5754437bf46e1adc010e6588af5c7c0fc836a2cb76e94e697854`。
 
 本地证据：`.runs/image-auth-0.1.1-dev.1-smoke.json`、`.runs/image-auth-install-report.json`、`.runs/image-auth-real-tool-check.json`。该开发包只做 Windows 本机验证，不单独发布到 GitHub Release 或插件商店；正式版平台验证另记，不改写上面的 v0.1.0 记录。
+
+## 正式版 0.1.1：图片接口鉴权修复
+
+2026-10-24（Asia/Shanghai），[v0.1.1](https://github.com/chatwithgod/cpa-plugin-codexgate/releases/tag/v0.1.1) 已公开发布，源代码提交为 `320636b37f95ae5a0426268622d6f3df183c0a0c`。[正式发布 CI](https://github.com/chatwithgod/cpa-plugin-codexgate/actions/runs/40026948901) 的五个平台及发布步骤全部通过：
+
+| 平台 | 原生构建/单元/vet/race | 商店 SDK 安装器 | 官方 CPA 宿主（含图片鉴权与 WS 握手） |
+| --- | --- | --- | --- |
+| Windows amd64 | 通过 | 通过 | 通过 |
+| Linux amd64 | 通过 | 通过 | 通过 |
+| Linux arm64 | 通过 | 通过 | 通过 |
+| macOS amd64 | 通过 | 通过 | 通过 |
+| macOS arm64 | 通过 | 通过 | 通过 |
+
+每个平台均新增验证 `POST /v1/images/generations` 和 `POST /v1/images/edits`：无凭证返回 401；当前登录和原 API Key 均通过鉴权，随后由故意不完整的 JSON 触发本地参数错误 400。这些检查没有调用图片模型。原有凭证轮换、退出、启停、并发回调、管理接口保护和 WebSocket 握手检查继续通过；两种 Linux 架构符合 GLIBC 2.17 基线。
+
+发布后下载了全部 5 个公开 ZIP，核对 SHA-256、压缩包结构、内置构建记录和动态库校验值，均与 [verification.json](https://github.com/chatwithgod/cpa-plugin-codexgate/releases/download/v0.1.1/verification.json) 一致。另用固定版本的 CPA SDK 安装器从真实 GitHub Release 下载 Windows 包，安装到新的隔离目录，并通过隔离 CPA 8.0.38 的完整宿主检查。
+
+本地报告：`.runs/published-v0.1.1/download-verification.json`、`.runs/published-v0.1.1/live-install.json`、`.runs/published-v0.1.1/live-installed-host-smoke.json`。正式 Windows DLL SHA-256 为 `e2c5d88b57da7f3f2c7d98024449b48e36e08dc10a9292bb86f89d5a8cc6c835`。本轮发布没有新增真实模型调用；本机生产插件保持此前已验证的 `0.1.1-dev.1`，隔离测试进程已停止。
+
+原商店 [PR #284](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/284) 的标题及中英介绍已更新到 v0.1.1，仍只新增 `codexgate` 注册条目。该条目按最新 Release 获取版本，无需另加版本字段。记录时 PR 开放待审核，尚未正式上架。
