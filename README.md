@@ -1,6 +1,6 @@
 # CodexGate
 
-[简体中文](README.zh-CN.md) · [Releases](https://github.com/chatwithgod/cpa-plugin-codexgate/releases) · [Development Docs](docs/DEVELOPMENT.md)
+[简体中文](README.zh-CN.md) · [Plugin Store](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store) · [Manual Downloads](https://github.com/chatwithgod/cpa-plugin-codexgate/releases) · [Development Docs](docs/DEVELOPMENT.md)
 
 **Fixes the missing dot entry in Codex after connecting to CPA.**
 
@@ -17,47 +17,22 @@ Model requests still route through CPA, and your existing API Keys remain active
 
 The plugin automatically detects the login file, so manual configuration is usually not required. Currently, file-based credentials are supported; system credential vaults are not. For containers or remote deployments, see the [development documentation](docs/DEVELOPMENT.md#login-file-and-deployment).
 
-## Download Plugin
-
-CodexGate is not yet listed in the plugin store. Please download the stable release from [Releases (v0.1.1)](https://github.com/chatwithgod/cpa-plugin-codexgate/releases/tag/v0.1.1).
-
-Select the package matching your operating system:
-
-| OS / Architecture | Package |
-|---|---|
-| Windows 64-bit | `codexgate_0.1.1_windows_amd64.zip` |
-| Linux x86_64 | `codexgate_0.1.1_linux_amd64.zip` |
-| Linux ARM64 | `codexgate_0.1.1_linux_arm64.zip` |
-| macOS Intel | `codexgate_0.1.1_darwin_amd64.zip` |
-| macOS Apple Silicon | `codexgate_0.1.1_darwin_arm64.zip` |
-
 ## Installation and Activation
+
+CodexGate is available in the official [CLIProxyAPI Plugins Store](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store). We recommend installing directly through the store.
 
 Keep this order in mind:
 
 **Install and enable the plugin first → Turn on "Use openai provider identifier" → Restart Codex.**
 
-### 1. Place the Plugin File
+### 1. Install via Plugin Store (Recommended)
 
-Wait until your current tasks finish, then stop CPA.
+1. Search for **CodexGate** in the CPA / ECPA plugin store (if it does not show up, refresh the store list first).
+2. Click install, and make sure it is enabled in plugin management.
 
-Extract the downloaded ZIP package and place the plugin file into the CPA plugins directory (typically named `plugins`). The target paths are shown below; you can create any missing subdirectories manually:
+Keep your existing API Keys as they are; there is no need to change them.
 
-| OS / Architecture | Target File Path inside `plugins` |
-|---|---|
-| Windows 64-bit | `windows/amd64/codexgate.dll` |
-| Linux x86_64 | `linux/amd64/codexgate.so` |
-| Linux ARM64 | `linux/arm64/codexgate.so` |
-| macOS Intel | `darwin/amd64/codexgate.dylib` |
-| macOS Apple Silicon | `darwin/arm64/codexgate.dylib` |
-
-### 2. Enable CodexGate
-
-Start CPA, find **CodexGate** in the plugin management page, and enable it.
-
-Keep your existing API Keys as they are; there is no need to delete or replace them.
-
-### 3. Enable Settings in ECPA
+### 2. Enable Settings in ECPA
 
 Make sure CodexGate is enabled, then follow the numbered steps in the interface:
 
@@ -67,13 +42,44 @@ Make sure CodexGate is enabled, then follow the numbered steps in the interface:
 
 ![ECPA steps: Agent Configuration, Configuration Management, and Use openai provider identifier](docs/images/ecpa-openai-provider-zh-v1.png)
 
-### 4. Restart Codex
+### 3. Restart Codex
 
 Completely exit and relaunch the Codex desktop client, then verify:
 
 - The dot entry appears and responds normally.
 - New chat sessions send and receive responses properly.
 - Requests show up as expected in the CPA usage logs.
+
+## Manual Installation (Fallback)
+
+<details>
+<summary>View manual download and installation steps</summary>
+
+If store installation is unavailable, download [Releases (v0.1.1)](https://github.com/chatwithgod/cpa-plugin-codexgate/releases/tag/v0.1.1). Select the package matching your operating system:
+
+| OS / Architecture | Package |
+|---|---|
+| Windows 64-bit | `codexgate_0.1.1_windows_amd64.zip` |
+| Linux x86_64 | `codexgate_0.1.1_linux_amd64.zip` |
+| Linux ARM64 | `codexgate_0.1.1_linux_arm64.zip` |
+| macOS Intel | `codexgate_0.1.1_darwin_amd64.zip` |
+| macOS Apple Silicon | `codexgate_0.1.1_darwin_arm64.zip` |
+
+Wait until current tasks finish, then stop CPA.
+
+Extract the ZIP and place the plugin file in the corresponding subdirectory inside `plugins`. Create any missing subdirectories:
+
+| OS / Architecture | Target File Path inside `plugins` |
+|---|---|
+| Windows 64-bit | `windows/amd64/codexgate.dll` |
+| Linux x86_64 | `linux/amd64/codexgate.so` |
+| Linux ARM64 | `linux/arm64/codexgate.so` |
+| macOS Intel | `darwin/amd64/codexgate.dylib` |
+| macOS Apple Silicon | `darwin/arm64/codexgate.dylib` |
+
+Restart CPA and enable **CodexGate** in plugin management, then continue with the ECPA settings and Codex restart steps above.
+
+</details>
 
 ## Not Using ECPA?
 

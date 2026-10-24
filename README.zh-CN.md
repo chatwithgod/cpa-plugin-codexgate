@@ -1,6 +1,6 @@
 # CodexGate
 
-[English](README.md) · [下载版本](https://github.com/chatwithgod/cpa-plugin-codexgate/releases) · [开发文档](docs/DEVELOPMENT.md)
+[English](README.md) · [插件商店](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store) · [手动下载](https://github.com/chatwithgod/cpa-plugin-codexgate/releases) · [开发文档](docs/DEVELOPMENT.md)
 
 **解决接入 CPA 后，dot 入口消失的问题。**
 
@@ -17,47 +17,22 @@ CodexGate 是一个 CPA（CLIProxyAPI）插件，用来解决因自定义提供�
 
 插件会自动读取登录文件，通常不需要手写配置。目前支持文件式登录，不读取系统凭据库；容器、远程部署等情况请看[开发文档](docs/DEVELOPMENT.md#login-file-and-deployment)。
 
-## 下载插件
-
-目前尚未上架插件商店，请从 [Releases 下载正式版 v0.1.1](https://github.com/chatwithgod/cpa-plugin-codexgate/releases/tag/v0.1.1)。
-
-按你的电脑选择安装包：
-
-| 系统 | 安装包 |
-|---|---|
-| Windows 64 位 | `codexgate_0.1.1_windows_amd64.zip` |
-| Linux x86_64 | `codexgate_0.1.1_linux_amd64.zip` |
-| Linux ARM64 | `codexgate_0.1.1_linux_arm64.zip` |
-| macOS Intel | `codexgate_0.1.1_darwin_amd64.zip` |
-| macOS Apple Silicon | `codexgate_0.1.1_darwin_arm64.zip` |
-
 ## 安装与启用
+
+CodexGate 已收录至 [CPA 官方插件商店](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store)，推荐优先通过商店安装。
 
 记住这个顺序：
 
 **先安装并启用插件 → 再打开“使用 openai 提供商标识” → 重启 Codex。**
 
-### 1. 放好插件文件
+### 1. 商店安装（推荐）
 
-等当前任务结束后，先停止 CPA。
+1. 在 CPA / ECPA 插件商店中搜索 **CodexGate**（若未搜到，可先刷新商店列表）。
+2. 点击安装，并确认在插件管理中处于启用状态。
 
-解压下载的 ZIP，把里面的插件文件放进 CPA 插件目录。该目录通常叫 `plugins`，内部位置如下；缺少的文件夹可以自行创建：
+原有的 API Key 正常保留即可，无需改动。
 
-| 系统 | `plugins` 内的文件位置 |
-|---|---|
-| Windows 64 位 | `windows/amd64/codexgate.dll` |
-| Linux x86_64 | `linux/amd64/codexgate.so` |
-| Linux ARM64 | `linux/arm64/codexgate.so` |
-| macOS Intel | `darwin/amd64/codexgate.dylib` |
-| macOS Apple Silicon | `darwin/arm64/codexgate.dylib` |
-
-### 2. 启用 CodexGate
-
-启动 CPA，在插件管理中找到并启用 **CodexGate**。
-
-原有的 API Key 保留即可，不用删除或替换。
-
-### 3. 在 ECPA 中开启设置
+### 2. 在 ECPA 中开启设置
 
 确认 CodexGate 已启用，再按图中的顺序操作：
 
@@ -67,13 +42,44 @@ CodexGate 是一个 CPA（CLIProxyAPI）插件，用来解决因自定义提供�
 
 ![ECPA 设置步骤：智能体配置、配置管理、使用 openai 提供商标识](docs/images/ecpa-openai-provider-zh-v1.png)
 
-### 4. 重启 Codex
+### 3. 重启 Codex
 
-完全退出并重新打开 Codex，检查：
+完全退出并重新打开 Codex 客户端，检查：
 
 - dot 入口是否出现，并能正常回复。
 - 新聊天是否能正常回复。
 - CPA 使用记录中是否能看到请求。
+
+## 手动安装（备用）
+
+<details>
+<summary>展开手动下载与安装步骤</summary>
+
+如果无法通过商店安装，可以从 [Releases 下载正式版 v0.1.1](https://github.com/chatwithgod/cpa-plugin-codexgate/releases/tag/v0.1.1)。按你的电脑选择安装包：
+
+| 系统 | 安装包 |
+|---|---|
+| Windows 64 位 | `codexgate_0.1.1_windows_amd64.zip` |
+| Linux x86_64 | `codexgate_0.1.1_linux_amd64.zip` |
+| Linux ARM64 | `codexgate_0.1.1_linux_arm64.zip` |
+| macOS Intel | `codexgate_0.1.1_darwin_amd64.zip` |
+| macOS Apple Silicon | `codexgate_0.1.1_darwin_arm64.zip` |
+
+等当前任务结束后，先停止 CPA。
+
+解压 ZIP，把里面的插件文件放进 CPA 的 `plugins` 对应子目录；缺少的文件夹可以自行创建：
+
+| 系统 | `plugins` 内的文件位置 |
+|---|---|
+| Windows 64 位 | `windows/amd64/codexgate.dll` |
+| Linux x86_64 | `linux/amd64/codexgate.so` |
+| Linux ARM64 | `linux/arm64/codexgate.so` |
+| macOS Intel | `darwin/amd64/codexgate.dylib` |
+| macOS Apple Silicon | `darwin/arm64/codexgate.dylib` |
+
+重新启动 CPA，在插件管理中找到并启用 **CodexGate**，再继续上面的 ECPA 设置和重启 Codex 步骤。
+
+</details>
 
 ## 没有使用 ECPA？
 

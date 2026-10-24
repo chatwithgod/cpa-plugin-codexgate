@@ -106,4 +106,10 @@ Intel macOS 首次实测暴露了宿主与 Go 动态库的 TLS/回调栈冲突�
 
 本地报告：`.runs/published-v0.1.1/download-verification.json`、`.runs/published-v0.1.1/live-install.json`、`.runs/published-v0.1.1/live-installed-host-smoke.json`。正式 Windows DLL SHA-256 为 `e2c5d88b57da7f3f2c7d98024449b48e36e08dc10a9292bb86f89d5a8cc6c835`。本轮发布没有新增真实模型调用；本机生产插件保持此前已验证的 `0.1.1-dev.1`，隔离测试进程已停止。
 
-原商店 [PR #284](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/284) 的标题及中英介绍已更新到 v0.1.1，仍只新增 `codexgate` 注册条目。该条目按最新 Release 获取版本，无需另加版本字段。记录时 PR 开放待审核，尚未正式上架。
+原商店 [PR #284](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/284) 的标题及中英介绍已更新到 v0.1.1，仍只新增 `codexgate` 注册条目。该条目按最新 Release 获取版本，无需另加版本字段。提交这份发布验证记录时，PR 尚在等待审核；后续收录状态见下方。
+
+## 官方插件商店收录
+
+2026-10-24（Asia/Shanghai），确认 [PR #284](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/pull/284) 已合并，合并提交为 `79a0dffba3f0bb9062834ce7640cad85747a7fc9`。[官方注册目录](https://github.com/router-for-me/CLIProxyAPI-Plugins-Store/blob/main/registry.json) 已能检索到唯一的 `codexgate` 条目，其内容与本项目 `store/registry-entry.json` 一致。
+
+中英文 README 和 v0.1.1 Release 介绍已改为推荐插件商店安装，手动下载保留为备用方式。这次仅更新文档和收录状态，继续使用已经发布并验证的 v0.1.1 构件。
